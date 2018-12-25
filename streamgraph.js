@@ -1,55 +1,86 @@
-let n = 20, // number of layers
-  m = 200, // number of samples per layer
-  stack = d3.stack().keys(d3.range(n).map(function (d) { return "layer" + d; })).offset(d3.stackOffsetWiggle)
+let width = 960,
+  height = 500,
+  margin = {
+    top: 20,
+    right: 100,
+    bottom: 50,
+    left: 50
+  }
+
+let svg = d3.select('#streamgraph-rabies').append('svg')
+  .attr('viewBox', '0 0 ' + width + ' ' + height)
 
 d3.csv('data/rabies.csv').then(data => {
-  console.log(data)
 
-  // Create empty data structures
-  let matrix0 = d3.range(m).map(function (d) { return { x: d } })
-  let matrix1 = d3.range(m).map(function (d) { return { x: d } })
+  let color = d3.scaleSequential(d3.interpolateRdYlBu).domain([0, data.columns.slice(1).length])
 
-  // Fill them with random data
-  d3.range(n).map(function (d) { bumpLayer(m, matrix0, d) })
-  d3.range(n).map(function (d) { bumpLayer(m, matrix1, d) })
+  data.forEach(d => {
+    d.Year = new Date(d.Year)
+  })
 
-  console.log(matrix0)
-  console.log(matrix1)
+  let stack = d3.stack().keys(data.columns.slice(1))
+    .offset(d3.stackOffsetWiggle)
+    .order(d3.stackOrderAscending)
 
-  let layers0 = stack(matrix0),
-    layers1 = stack(matrix1)
-
-  let width = 960,
-    height = 500
-
-  let x = d3.scaleLinear()
-    .domain([0, m - 1])
-    .range([0, width])
-
-  let y = d3.scaleLinear()
-    .domain([d3.min(layers0.concat(layers1), function (layer) { return d3.min(layer, function (d) { return d[0] }) }), d3.max(layers0.concat(layers1), function (layer) { return d3.max(layer, function (d) { return d[1] }) })])
-    .range([height, 0])
-
-  let color = d3.scaleLinear()
-    .range(["#aad", "#556"])
+  let layers = stack(data)
 
   let area = d3.area()
-    .x(function (d, i) { return x(d.data.x) })
+    .x(function (d, i) { return x(d.data.Year) })
     .y0(function (d) { return y(d[0]) })
     .y1(function (d) { return y(d[1]) })
 
-  let svg = d3.select("#streamgraph-rabies").append("svg")
-    .attr("width", width)
-    .attr("height", height)
+  let x = d3.scaleTime()
+    .domain(d3.extent(data, d => d.Year))
+    .range([margin.left, width])
 
-  svg.selectAll("path")
-    .data(layers0)
-    .enter().append("path")
-    .attr("d", area)
-    .style("fill", function () { return color(Math.random()) })
+  let y = d3.scaleLinear()
+    .domain([0, 1])
+    .range([height - margin.bottom, margin.top])
+
+  svg.selectAll('path')
+    .data(layers)
+    .enter().append('path')
+    .attr('d', area)
+    .style('fill', function (d, i) { return color(i) })
+    .on('mouseover', d => { console.log(d)})
+
+  let yAxis = g => g
+    .attr('transform', `translate(${margin.left},${margin.top})`)
+    .call(d3.axisLeft(y).tickFormat(d3.format('.0%')))
+    .call(g => g.select('.tick:last-of-type text').clone()
+      .attr('x', 4)
+      .attr('text-anchor', 'start')
+      .attr('font-weight', 'bold'))
+    .attr('class', 'y-axis')
+
+  svg.append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', -2)
+    .attr('x', -80)
+    .attr('dy', '1em')
+    .attr('font-size', '10px')
+    .style('text-anchor', 'middle')
+    .text('% of Total Rabid Animals')
+
+  svg.append('g')
+    .call(yAxis)
+
+  let xAxis = g => g
+    .attr('transform', `translate(0,${height - margin.bottom + margin.top})`)
+    .call(d3.axisBottom(x))
+    .call(g => g.append('text')
+      .attr('x', width - margin.right)
+      .attr('y', -4)
+      .attr('fill', '#000')
+      .attr('font-weight', 'bold')
+      .attr('text-anchor', 'end'))
+      .attr('class', 'x-axis')
+
+  let xAxisGroup = svg.append('g')
+    .call(xAxis)
 
   function transition() {
-    d3.selectAll("path")
+    d3.selectAll('path')
       .data(function () {
         let d = layers1
         layers1 = layers0
@@ -57,7 +88,7 @@ d3.csv('data/rabies.csv').then(data => {
       })
       .transition()
       .duration(2500)
-      .attr("d", area)
+      .attr('d', area)
   }
 
   // Inspired by Lee Byron's test data generator.
@@ -78,6 +109,8 @@ d3.csv('data/rabies.csv').then(data => {
 
     for (i = 0; i < n; ++i) a[i] = 0
     for (i = 0; i < 5; ++i) bump(a)
-    return a.forEach(function (d, i) { matrix[i]["layer" + layer] = Math.max(0, d) + 1 })
+    return a.forEach(function (d, i) {
+      matrix[i]["layer" + layer] = Math.max(0, d) + 1
+    })
   }
 })
