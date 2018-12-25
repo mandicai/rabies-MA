@@ -22,6 +22,6 @@ figure.sticky {
   margin-bottom: 50%;
 }
 
-.step.last-step {
+.step:last-of-type {
   margin-bottom: 10%;
 }
