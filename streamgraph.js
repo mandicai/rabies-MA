@@ -45,7 +45,7 @@ d3.csv('data/rabies.csv').then(data => {
     .on('mouseover', d => { console.log(d)})
 
   let yAxis = g => g
-    .attr('transform', `translate(${margin.left},${margin.top})`)
+    .attr('transform', `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).tickFormat(d3.format('.0%')))
     .call(g => g.select('.tick:last-of-type text').clone()
       .attr('x', 4)
@@ -68,16 +68,24 @@ d3.csv('data/rabies.csv').then(data => {
   let xAxis = g => g
     .attr('transform', `translate(0,${height - margin.bottom + margin.top})`)
     .call(d3.axisBottom(x))
-    .call(g => g.append('text')
-      .attr('x', width - margin.right)
-      .attr('y', -4)
-      .attr('fill', '#000')
-      .attr('font-weight', 'bold')
-      .attr('text-anchor', 'end'))
-      .attr('class', 'x-axis')
 
   let xAxisGroup = svg.append('g')
     .call(xAxis)
+
+  // // instantiate the scrollama
+  // const scroller = scrollama()
+
+  // // setup the instance, pass callback functions
+  // scroller
+  //   .setup({
+  //     step: '.scroll__text .step', // required
+  //     container: '.scroll', // required (for sticky)
+  //     graphic: '.scroll__graphic' // required (for sticky)
+  //   })
+  //   .onStepEnter(handleStepEnter)
+  //   .onStepExit(handleStepExit)
+  //   .onContainerEnter(handleContainerEnter)
+  //   .onContainerExit(handleContainerExit)
 
   function transition() {
     d3.selectAll('path')
