@@ -1,5 +1,5 @@
-let width = 960,
-  height = 500,
+let width = 650,
+  height = 400,
   margin = {
     top: 20,
     right: 100,
