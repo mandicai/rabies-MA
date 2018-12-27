@@ -20,6 +20,10 @@ a {
   font-family: 'Major Mono Display', monospace;
 }
 
+.image-header img {
+  width: 12%;
+}
+
 .scrolly {
 	max-width: 75rem;
 	margin: 3rem auto;
@@ -51,6 +55,13 @@ article .step p {
   background-color: #fff;
   pointer-events: none;
   box-shadow: 0 3px 6px rgba(0, 0, 0, .16);
+}
+
+article .step p img {
+  width: 25%;
+  display: block;
+  margin: auto;
+  padding: 2%;
 }
 
 figure.sticky {

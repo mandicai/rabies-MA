@@ -110,6 +110,21 @@ d3.csv('data/rabies.csv').then(data => {
     .attr('stroke', 'none')
     .attr('font-size', '10px')
 
+  let slopeScaleLabels = svgSlope.append('g')
+    .attr('class', 'slope-scale-labels')
+
+  slopeScaleLabels.append('text')
+    .text('50%')
+    .attr('font-size', '10px')
+    .attr('dx', width + 10)
+    .attr('dy', 30)
+
+  slopeScaleLabels.append('text')
+    .text('0%')
+    .attr('font-size', '10px')
+    .attr('dx', width + 10)
+    .attr('dy', height - margin.bottom + 5)
+
   let stack = d3.stack().keys(data.columns.slice(1))
     .order(d3.stackOrderAscending)
     .offset(d3.stackOffsetWiggle)
