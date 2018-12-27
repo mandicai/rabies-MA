@@ -1,3 +1,12 @@
+body {
+  background-color: #FCF6BE;
+  font-family: 'Arvo', serif;
+}
+
+a {
+  color: #D57500;
+}
+
 .container {
   margin: 5%;
 }
@@ -7,10 +16,13 @@
   margin: 0 0 2%;
 }
 
+.header h1 {
+  font-family: 'Major Mono Display', monospace;
+}
+
 .scrolly {
 	max-width: 60rem;
 	margin: 3rem auto;
-	background-color: #fff;
 	padding: 1rem;
 }
 
