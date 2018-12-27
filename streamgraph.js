@@ -2,21 +2,113 @@ let width = 650,
   height = 400,
   margin = {
     top: 20,
-    right: 100,
-    bottom: 50,
-    left: 50
+    right: 30,
+    bottom: 30,
+    left: 75
   }
+
+let svgSlope = d3.select('#slopegraph-rabies').append('svg')
+  .attr('viewBox', -margin.left + ' ' + -margin.top + ' ' + (width + margin.left + margin.right)  + ' ' + height)
 
 let svg = d3.select('#streamgraph-rabies').append('svg')
   .attr('viewBox', '0 0 ' + width + ' ' + height)
 
 d3.csv('data/rabies.csv').then(data => {
-
   let color = ['#D57500', '#8F3B1B', '#DBCA69', '#404F24', '#668D3C', '#B99C6B', '#BDD09F', '#4E6172', '#493829', '#816C5B']
 
   data.forEach(d => {
     d.Year = new Date(d.Year)
   })
+
+  // create data entries
+  let dataEntries = data.map(d => {
+    let array = []
+    Object.keys(d).forEach(k => {
+      if (k != 'Year') {
+        array.push({
+          'year': d.Year,
+          'animal': k,
+          'percentage': d[k]
+        })
+      }
+    })
+    return array
+  })
+
+  let x = d3.scaleTime()
+    .domain(d3.extent(data, d => d.Year))
+    .range([margin.left, width])
+
+  let y = d3.scaleLinear()
+    .domain([0, 0.5])
+    .range([height - margin.bottom, margin.top])
+
+  let formatTime = d3.timeFormat('%Y')
+
+  // created nested structure for sleopgraph
+  let nestedByAnimal = d3.nest()
+    .key(function (d) {
+      return d.animal
+    })
+    .entries(flatten(dataEntries)) // pass in flattened data entries
+
+  let borderLines = svgSlope.append('g')
+    .attr('class', 'border-lines')
+
+  // 5 border lines, one for each year
+  for (let i = 0; i < data.length; i++) {
+     borderLines.append('line')
+       .attr('x1', i * (width / 4))
+       .attr('y1', margin.top)
+       .attr('x2', i * (width / 4))
+       .attr('y2', height - margin.bottom)
+
+    borderLines.append('text')
+      .text(formatTime(data[i].Year))
+      .attr('dx', i * (width / 4))
+      .attr('text-anchor', 'middle')
+      .attr('dy', 10)
+  }
+
+  // 10 slope groups, one for each animal
+  let slopeGroups = svgSlope.append('g')
+    .selectAll('g')
+    .data(nestedByAnimal)
+    .enter().append('g')
+    .attr('class', 'slope-group')
+    .attr('stroke', (d,i) => color[i])
+
+  // data.length - 1 because we want intervals
+  for (let i = 0; i < data.length - 1; i ++) {
+    slopeGroups.append('line')
+      .attr('x1', i * (width / 4))
+      .attr('y1', function (d) {
+        return y(d.values[i].percentage)
+      })
+      .attr('x2', (i + 1) * (width / 4))
+      .attr('y2', function (d) {
+        return y(d.values[i + 1].percentage)
+      })
+      .attr('class', 'slope-line')
+  }
+
+  // data.length because we want each year
+  for (let i = 0; i < data.length; i++) {
+    slopeGroups.append('circle')
+      .attr('r', 5)
+      .attr('fill', '#BEBF9F')
+      .attr('cx', i * (width / 4))
+      .attr('cy', d => y(d.values[i].percentage))
+  }
+
+  slopeGroups.append('text')
+    .text(d => d.key)
+    .attr('dy', function (d) {
+      return y(d.values[0].percentage) + 3
+    })
+    .attr('dx', -margin.left)
+    .attr('stroke', 'none')
+    .attr('font-size', '10px')
 
   let stack = d3.stack().keys(data.columns.slice(1))
     .order(d3.stackOrderAscending)
@@ -28,14 +120,6 @@ d3.csv('data/rabies.csv').then(data => {
     .x(function (d, i) { return x(d.data.Year) })
     .y0(function (d) { return y(d[0]) })
     .y1(function (d) { return y(d[1]) + 3 })
-
-  let x = d3.scaleTime()
-    .domain(d3.extent(data, d => d.Year))
-    .range([margin.left, width])
-
-  let y = d3.scaleLinear()
-    .domain([0, 1])
-    .range([height - margin.bottom, margin.top])
 
   svg.selectAll('path')
     .data(layers)
@@ -89,7 +173,6 @@ d3.csv('data/rabies.csv').then(data => {
     // .onContainerExit(handleContainerExit)
 
   function handleStepEnter(node) {
-    console.log('index', node.index)
   }
 
   function transition() {
@@ -104,26 +187,7 @@ d3.csv('data/rabies.csv').then(data => {
       .attr('d', area)
   }
 
-  // Inspired by Lee Byron's test data generator.
-  function bumpLayer(n, matrix, layer) {
-
-    function bump(a) {
-      let x = 1 / (.1 + Math.random()),
-        y = 2 * Math.random() - .5,
-        z = 10 / (.1 + Math.random())
-      for (let i = 0; i < n; i++) {
-        let w = (i / n - y) * z
-        a[i] += x * Math.exp(-w * w)
-      }
-    }
-
-    let a = []
-    let i
-
-    for (i = 0; i < n; ++i) a[i] = 0
-    for (i = 0; i < 5; ++i) bump(a)
-    return a.forEach(function (d, i) {
-      matrix[i]["layer" + layer] = Math.max(0, d) + 1
-    })
+  function flatten(array) {
+    return array.reduce((acc, val) => acc.concat(val), [])
   }
 })

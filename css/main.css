@@ -21,7 +21,7 @@ a {
 }
 
 .scrolly {
-	max-width: 60rem;
+	max-width: 75rem;
 	margin: 3rem auto;
 	padding: 1rem;
 }
@@ -57,7 +57,12 @@ figure.sticky {
   position: sticky;
   width: 100%;
   margin: 0;
-  top: 25vh;
+  top: 20vh;
   left: 0;
   /* height: 50vh; */
+}
+
+.border-lines {
+  stroke: #000;
+  stroke-width: 1px;
 }
