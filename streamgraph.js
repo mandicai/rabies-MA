@@ -18,7 +18,6 @@ d3.csv('data/rabies.csv').then(data => {
     d.Year = new Date(d.Year)
   })
 
-  console.log(data.columns.slice(1))
   let stack = d3.stack().keys(data.columns.slice(1))
     .order(d3.stackOrderAscending)
     .offset(d3.stackOffsetWiggle)
@@ -74,20 +73,24 @@ d3.csv('data/rabies.csv').then(data => {
   let xAxisGroup = svg.append('g')
     .call(xAxis)
 
-  // // instantiate the scrollama
-  // const scroller = scrollama()
+  // instantiate the scrollama
+  const scroller = scrollama()
 
-  // // setup the instance, pass callback functions
-  // scroller
-  //   .setup({
-  //     step: '.scroll__text .step', // required
-  //     container: '.scroll', // required (for sticky)
-  //     graphic: '.scroll__graphic' // required (for sticky)
-  //   })
-  //   .onStepEnter(handleStepEnter)
-  //   .onStepExit(handleStepExit)
-  //   .onContainerEnter(handleContainerEnter)
-  //   .onContainerExit(handleContainerExit)
+  // setup the instance, pass callback functions
+  scroller
+    .setup({
+      step: '.step', // required
+      container: '.scrolly', // required (for sticky)
+      graphic: '.sticky' // required (for sticky)
+    })
+    .onStepEnter(handleStepEnter)
+    // .onStepExit(handleStepExit)
+    // .onContainerEnter(handleContainerEnter)
+    // .onContainerExit(handleContainerExit)
+
+  function handleStepEnter(node) {
+    console.log('index', node.index)
+  }
 
   function transition() {
     d3.selectAll('path')
