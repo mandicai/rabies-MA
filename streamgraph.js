@@ -12,22 +12,23 @@ let svg = d3.select('#streamgraph-rabies').append('svg')
 
 d3.csv('data/rabies.csv').then(data => {
 
-  let color = d3.scaleSequential(d3.interpolateRdYlBu).domain([0, data.columns.slice(1).length])
+  let color = ['#D57500', '#8F3B1B', '#DBCA69', '#404F24', '#668D3C', '#B99C6B', '#BDD09F', '#4E6172', '#493829', '#816C5B']
 
   data.forEach(d => {
     d.Year = new Date(d.Year)
   })
 
+  console.log(data.columns.slice(1))
   let stack = d3.stack().keys(data.columns.slice(1))
-    .offset(d3.stackOffsetWiggle)
     .order(d3.stackOrderAscending)
+    .offset(d3.stackOffsetWiggle)
 
   let layers = stack(data)
 
   let area = d3.area()
     .x(function (d, i) { return x(d.data.Year) })
     .y0(function (d) { return y(d[0]) })
-    .y1(function (d) { return y(d[1]) })
+    .y1(function (d) { return y(d[1]) + 3 })
 
   let x = d3.scaleTime()
     .domain(d3.extent(data, d => d.Year))
@@ -41,8 +42,9 @@ d3.csv('data/rabies.csv').then(data => {
     .data(layers)
     .enter().append('path')
     .attr('d', area)
-    .style('fill', function (d, i) { return color(i) })
-    .on('mouseover', d => { console.log(d)})
+    .style('fill', function (d, i) { return color[i] })
+    .attr('class', d => d.key)
+    .on('mouseover', d => console.log(d))
 
   let yAxis = g => g
     .attr('transform', `translate(${margin.left},0)`)
