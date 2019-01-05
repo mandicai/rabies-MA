@@ -45,7 +45,7 @@ d3.csv('data/rabies.csv').then(data => {
 
   let formatTime = d3.timeFormat('%Y')
 
-  // created nested structure for sleopgraph
+  // created nested structure for slopegraph
   let nestedByAnimal = d3.nest()
     .key(function (d) {
       return d.animal
@@ -75,7 +75,7 @@ d3.csv('data/rabies.csv').then(data => {
     .selectAll('g')
     .data(nestedByAnimal)
     .enter().append('g')
-    .attr('class', 'slope-group')
+    .attr('class', d => 'slope-group ' + d.key)
     .attr('stroke', (d,i) => color[i])
 
   // data.length - 1 because we want intervals
@@ -109,6 +109,7 @@ d3.csv('data/rabies.csv').then(data => {
     .attr('dx', -margin.left)
     .attr('stroke', 'none')
     .attr('font-size', '10px')
+    .attr('class', 'slope-group-text')
 
   let slopeScaleLabels = svgSlope.append('g')
     .attr('class', 'slope-scale-labels')
@@ -125,24 +126,22 @@ d3.csv('data/rabies.csv').then(data => {
     .attr('dx', width + 10)
     .attr('dy', height - margin.bottom + 5)
 
+  // streamgraph
   let stack = d3.stack().keys(data.columns.slice(1))
     .order(d3.stackOrderAscending)
     .offset(d3.stackOffsetWiggle)
 
   let layers = stack(data)
 
+  let initialArea = d3.area()
+    .x(function (d, i) { return x(d.data.Year) })
+    .y0(height)
+    .y1(height)
+
   let area = d3.area()
     .x(function (d, i) { return x(d.data.Year) })
     .y0(function (d) { return y(d[0]) })
     .y1(function (d) { return y(d[1]) + 3 })
-
-  svg.selectAll('path')
-    .data(layers)
-    .enter().append('path')
-    .attr('d', area)
-    .style('fill', function (d, i) { return color[i] })
-    .attr('class', d => d.key)
-    .on('mouseover', d => console.log(d))
 
   let yAxis = g => g
     .attr('transform', `translate(${margin.left},0)`)
@@ -153,24 +152,9 @@ d3.csv('data/rabies.csv').then(data => {
       .attr('font-weight', 'bold'))
     .attr('class', 'y-axis')
 
-  svg.append('text')
-    .attr('transform', 'rotate(-90)')
-    .attr('y', -2)
-    .attr('x', -80)
-    .attr('dy', '1em')
-    .attr('font-size', '10px')
-    .style('text-anchor', 'middle')
-    .text('% of Total Rabid Animals')
-
-  svg.append('g')
-    .call(yAxis)
-
   let xAxis = g => g
     .attr('transform', `translate(0,${height - margin.bottom + margin.top})`)
     .call(d3.axisBottom(x))
-
-  let xAxisGroup = svg.append('g')
-    .call(xAxis)
 
   // instantiate the scrollama
   const scroller = scrollama()
@@ -183,11 +167,102 @@ d3.csv('data/rabies.csv').then(data => {
       graphic: '.sticky' // required (for sticky)
     })
     .onStepEnter(handleStepEnter)
-    // .onStepExit(handleStepExit)
+    .onStepExit(handleStepExit)
     // .onContainerEnter(handleContainerEnter)
     // .onContainerExit(handleContainerExit)
 
   function handleStepEnter(node) {
+    if (node.index === 0) {
+      d3.selectAll('.slope-group')
+        .transition()
+        .style('opacity', d => {
+          if (d.key != 'Raccoon') {
+            return 0.1
+          } else {
+            return 1.0
+          }
+        })
+    } else if (node.index === 1) {
+      d3.selectAll('.slope-group')
+        .transition()
+        .style('opacity', d => {
+          if (d.key != 'Bat') {
+            return 0.1
+          } else {
+            return 1.0
+          }
+        })
+    } else if (node.index === 2) {
+      transitionToStreamGraph()
+    }
+  }
+
+  function transitionToStreamGraph() {
+    // remove unneeded labels
+    d3.selectAll('.border-lines,.slope-group-text,.slope-scale-labels')
+      .transition()
+      .style('opacity', 0)
+
+    svgSlope.attr('viewBox', '0 0 ' + width + ' ' + height)
+
+    svgSlope.selectAll('path')
+      .data(layers)
+      .enter().append('path')
+      .attr('d', initialArea)
+      .transition().duration(1000) // might take out this transition
+      .attr('d', area)
+      .style('fill', function (d, i) {
+        return color[i]
+      })
+      .attr('class', d => d.key)
+      .on('mouseover', d => console.log(d))
+
+    let streamGroup = svgSlope.append('g').attr('transform', `translate(0,-30)`)
+
+    // create axes
+    let yAxisGroup = streamGroup.append('g')
+      .call(yAxis)
+
+    let xAxisGroup = streamGroup.append('g')
+      .call(xAxis)
+
+    streamGroup.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', -2)
+      .attr('x', -80)
+      .attr('dy', '1em')
+      .attr('font-size', '10px')
+      .style('text-anchor', 'middle')
+      .text('% of Total Rabid Animals')
+
+    // transition the lines to the same coordinates as the paths here
+    console.log(layers)
+
+    streamGroup.append('line')
+      .attr('x1', 0)
+      .attr('y1', y(0.321))
+      .attr('x2', 0)
+      .attr('y2', y(0.65))
+      .attr('stroke', 'black')
+
+    // let area = d3.area()
+    //   .x(function (d, i) {
+    //     return x(d.data.Year)
+    //   })
+    //   .y0(function (d) {
+    //     return y(d[0])
+    //   })
+    //   .y1(function (d) {
+    //     return y(d[1]) + 3
+    //   })
+  }
+
+  function handleStepExit(node) {
+    if (node.index === 0) {
+      d3.selectAll('.slope-group')
+        .transition()
+        .style('opacity', 1)
+    }
   }
 
   function transition() {
