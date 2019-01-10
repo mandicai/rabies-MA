@@ -68,7 +68,7 @@ figure.sticky {
   position: sticky;
   width: 100%;
   margin: 0;
-  top: 20vh;
+  top: 15vh;
   left: 0;
   /* height: 50vh; */
 }
@@ -76,4 +76,8 @@ figure.sticky {
 .border-lines {
   stroke: #000;
   stroke-width: 1px;
+}
+
+.tick text {
+  font-family: 'Arvo', serif;
 }

@@ -4,7 +4,7 @@ let width = 650,
     top: 20,
     right: 30,
     bottom: 30,
-    left: 75
+    left: 120
   }
 
 let svgSlope = d3.select('#slopegraph-rabies').append('svg')
@@ -14,7 +14,48 @@ let svg = d3.select('#streamgraph-rabies').append('svg')
   .attr('viewBox', '0 0 ' + width + ' ' + height)
 
 d3.csv('data/rabies.csv').then(data => {
-  let color = ['#D57500', '#8F3B1B', '#DBCA69', '#404F24', '#668D3C', '#B99C6B', '#BDD09F', '#4E6172', '#493829', '#816C5B']
+  let color = [
+    {
+      text: 'Raccoon',
+      color: '#D57500'
+    },
+    {
+      text: 'Skunk',
+      color: '#8F3B1B'
+    },
+    {
+      text: 'Bat',
+      color: '#DBCA69'
+    },
+    {
+      text: 'Fox',
+      color: '#404F24'
+    },
+    {
+      text: 'Woodchuck',
+      color: '#668D3C'
+    },
+    {
+      text: 'Cat',
+      color: '#B99C6B'
+    },
+    {
+      text: 'Other*',
+      color: '#BDD09F'
+    },
+    {
+      text: 'Coyote',
+      color: '#4E6172'
+    },
+    {
+      text: 'Dog',
+      color: '#493829'
+    },
+    {
+      text: 'Cow',
+      color: '#816C5B'
+    }
+  ]
 
   data.forEach(d => {
     d.Year = new Date(d.Year)
@@ -83,7 +124,12 @@ d3.csv('data/rabies.csv').then(data => {
     .data(nestedByAnimal)
     .enter().append('g')
     .attr('class', d => 'slope-group ' + d.key)
-    .attr('stroke', (d,i) => color[i])
+    .attr('stroke', (d,i) => {
+      let index = color.findIndex(function(c) {
+        return c.text == d.key
+      })
+      return color[index].color
+    })
 
   // data.length - 1 because we want intervals
   for (let i = 0; i < data.length - 1; i ++) {
@@ -108,15 +154,15 @@ d3.csv('data/rabies.csv').then(data => {
       .attr('cy', d => y(d.values[i].percentage))
   }
 
-  slopeGroups.append('text')
-    .text(d => d.key)
-    .attr('dy', function (d) {
-      return y(d.values[0].percentage) + 3
-    })
-    .attr('dx', -margin.left)
-    .attr('stroke', 'none')
-    .attr('font-size', '10px')
-    .attr('class', 'slope-group-text')
+  // slopeGroups.append('text')
+  //   .text(d => d.key)
+  //   .attr('dy', function (d) {
+  //     return y(d.values[0].percentage) + 3
+  //   })
+  //   .attr('dx', -margin.left)
+  //   .attr('stroke', 'none')
+  //   .attr('font-size', '10px')
+  //   .attr('class', 'slope-group-text')
 
   let slopeScaleLabels = svgSlope.append('g')
     .attr('class', 'slope-scale-labels')
@@ -133,6 +179,27 @@ d3.csv('data/rabies.csv').then(data => {
     .attr('dx', width + 10)
     .attr('dy', height - margin.bottom + 5)
 
+  let legend = svgSlope.selectAll('.legend')
+    .data(color)
+    .enter().append('g')
+    .attr('class', 'legend')
+    .attr('transform', function (d, i) {
+      return 'translate(' + -90 + ',' + (i * 20) + ')'
+    })
+
+  legend.append('rect')
+    .attr('x', -20)
+    .attr('y', -9)
+    .style('fill', d => d.color)
+    .style('stroke', 'black')
+    .style('stroke-width', '0.5px')
+    .attr('width', '10px')
+    .attr('height', '10px')
+
+  legend.append('text')
+    .style('font-size', '12px')
+    .text(d => d.text)
+
   // streamgraph
   let stack = d3.stack().keys(data.columns.slice(1))
     .order(d3.stackOrderAscending)
@@ -148,7 +215,7 @@ d3.csv('data/rabies.csv').then(data => {
   let area = d3.area()
     .x(function (d, i) { return xStream(d.data.Year) })
     .y0(function (d) { return yStream(d[0]) })
-    .y1(function (d) { return yStream(d[1]) + 3 })
+    .y1(function (d) { return yStream(d[1]) + 5 })
 
   let yAxis = g => g
     .attr('transform', `translate(${margin.left},0)`)
@@ -171,18 +238,23 @@ d3.csv('data/rabies.csv').then(data => {
 
   streamGroup.selectAll('path')
     .data(layers)
-    .enter().append('path')
+    .enter().append('g')
+    .attr('class', 'streamgraph-group')
+    .append('path')
     .attr('d', initialArea)
-    .style('fill', function (d, i) {
-      return color[i]
+    .style('fill', function (d) {
+      let index = color.findIndex(function (c) {
+        return c.text == d.key
+      })
+      return color[index].color
     })
     .attr('class', d => d.key + ' streamgraph-path')
-    .attr('opacity', 0)
+    .style('opacity', 0)
 
   streamGroup.append('g')
     .attr('class', 'streamgraph-x-axis')
     .call(xAxisStream)
-    .attr('opacity', 0)
+    .style('opacity', 0)
 
   // instantiate the scrollama
   const scroller = scrollama()
@@ -223,38 +295,52 @@ d3.csv('data/rabies.csv').then(data => {
 
       svgSlope.attr('viewBox', -margin.left + ' ' + -margin.top + ' ' + (width + margin.left + margin.right) + ' ' + height)
 
-      d3.selectAll('.border-lines,.slope-group-text,.slope-scale-labels')
+      d3.selectAll('.border-lines,.slope-scale-labels')
         .transition()
         .style('opacity', 1)
 
       streamGroup.selectAll('.streamgraph-path')
         .transition().duration(1000) // might take out this transition
         .attr('d', initialArea)
-        .attr('opacity', 0)
+        .style('opacity', 0)
 
       streamGroup.select('.streamgraph-x-axis')
-        .attr('opacity', 0)
+        .style('opacity', 0)
 
     } else if (node.index === 2) {
       transitionToStreamGraph()
+
+      streamGroup.selectAll('.streamgraph-path')
+        .style('opacity', 1)
+
+    } else if (node.index === 3) {
+      streamGroup.selectAll('.streamgraph-path')
+        .transition()
+        .duration(750)
+        .style('opacity', d => {
+          if (d.key != 'Raccoon' && d.key != 'Skunk' && d.key != 'Bat') {
+            return 0.1
+          } else {
+            return 1.0
+          }
+        })
     }
   }
 
   function transitionToStreamGraph() {
     // remove unneeded labels
-    d3.selectAll('.border-lines,.slope-group-text,.slope-scale-labels')
-      .transition()
+    d3.selectAll('.border-lines,.slope-scale-labels,.slope-group')
       .style('opacity', 0)
 
-    svgSlope.attr('viewBox', '0 0 ' + width + ' ' + height)
-
     streamGroup.selectAll('.streamgraph-path')
-      .attr('opacity', 1)
+      .style('opacity', 1)
       .transition().duration(1000) // might take out this transition
       .attr('d', area)
 
     streamGroup.select('.streamgraph-x-axis')
-      .attr('opacity', 1)
+      .style('opacity', 1)
+
+    svgSlope.attr('viewBox', '0 0 ' + width + ' ' + height)
 
     // // create axes
     // // let yAxisGroup = streamGroup.append('g')
