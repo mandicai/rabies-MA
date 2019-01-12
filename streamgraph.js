@@ -1,17 +1,23 @@
-let width = 650,
-  height = 400,
-  margin = {
+let widthSlope = 650,
+  heightSlope = 400,
+  marginSlope = {
     top: 20,
     right: 30,
     bottom: 30,
     left: 120
-  }
+  },
+  widthStream = 650,
+  heightStream = 400,
+  marginStream = {
+    top: 20,
+    right: 30,
+    bottom: 50,
+    left: 110
+  },
+  legendMargin = 10
 
-let svgSlope = d3.select('#slopegraph-rabies').append('svg')
-  .attr('viewBox', -margin.left + ' ' + -margin.top + ' ' + (width + margin.left + margin.right)  + ' ' + height)
-
-let svg = d3.select('#streamgraph-rabies').append('svg')
-  .attr('viewBox', '0 0 ' + width + ' ' + height)
+let svg = d3.select('#slopegraph-rabies').append('svg')
+  .attr('viewBox', -marginSlope.left + ' ' + -marginSlope.top + ' ' + (widthSlope + marginSlope.left + marginSlope.right)  + ' ' + heightSlope)
 
 d3.csv('data/rabies.csv').then(data => {
   let color = [
@@ -78,18 +84,35 @@ d3.csv('data/rabies.csv').then(data => {
 
   let x = d3.scaleTime()
     .domain(d3.extent(data, d => d.Year))
-    .range([margin.left, width])
+    .range([marginSlope.left, widthSlope])
 
   let xStream = d3.scaleTime()
     .domain(d3.extent(data, d => d.Year))
-    .range([30, width - margin.right])
+    .range([marginStream.left, widthStream - marginStream.right])
 
   let y = d3.scaleLinear()
     .domain([0, 0.5])
-    .range([height - margin.bottom, margin.top])
+    .range([heightSlope - marginSlope.bottom, marginSlope.top])
 
   let yStream = d3.scaleLinear()
-    .range([height - margin.bottom - 20, margin.top])
+    .range([heightStream - marginStream.bottom, marginStream.top])
+
+  let yAxis = g => g
+    .attr('transform', `translate(${marginSlope.left},0)`)
+    .call(d3.axisLeft(y).tickFormat(d3.format('.0%')))
+    .call(g => g.select('.tick:last-of-type text').clone()
+      .attr('x', 4)
+      .attr('text-anchor', 'start')
+      .attr('font-weight', 'bold'))
+    .attr('class', 'y-axis')
+
+  let xAxis = g => g
+    .attr('transform', `translate(0,${heightSlope - marginSlope.bottom + marginSlope.top})`)
+    .call(d3.axisBottom(x))
+
+  let xAxisStream = g => g
+    .attr('transform', `translate(0,${heightStream - marginStream.bottom + marginStream.top})`)
+    .call(d3.axisBottom(xStream))
 
   let formatTime = d3.timeFormat('%Y')
 
@@ -100,26 +123,26 @@ d3.csv('data/rabies.csv').then(data => {
     })
     .entries(flatten(dataEntries)) // pass in flattened data entries
 
-  let borderLines = svgSlope.append('g')
+  let borderLines = svg.append('g')
     .attr('class', 'border-lines')
 
   // 5 border lines, one for each year
   for (let i = 0; i < data.length; i++) {
      borderLines.append('line')
-       .attr('x1', i * (width / 4))
-       .attr('y1', margin.top)
-       .attr('x2', i * (width / 4))
-       .attr('y2', height - margin.bottom)
+       .attr('x1', i * (widthSlope / 4))
+       .attr('y1', marginSlope.top)
+       .attr('x2', i * (widthSlope / 4))
+       .attr('y2', heightSlope - marginSlope.bottom)
 
     borderLines.append('text')
       .text(formatTime(data[i].Year))
-      .attr('dx', i * (width / 4))
+      .attr('dx', i * (widthSlope / 4))
       .attr('text-anchor', 'middle')
       .attr('dy', 10)
   }
 
   // 10 slope groups, one for each animal
-  let slopeGroups = svgSlope.append('g')
+  let slopeGroups = svg.append('g')
     .selectAll('g')
     .data(nestedByAnimal)
     .enter().append('g')
@@ -134,11 +157,11 @@ d3.csv('data/rabies.csv').then(data => {
   // data.length - 1 because we want intervals
   for (let i = 0; i < data.length - 1; i ++) {
     slopeGroups.append('line')
-      .attr('x1', i * (width / 4))
+      .attr('x1', i * (widthSlope / 4))
       .attr('y1', function (d) {
         return y(d.values[i].percentage)
       })
-      .attr('x2', (i + 1) * (width / 4))
+      .attr('x2', (i + 1) * (widthSlope / 4))
       .attr('y2', function (d) {
         return y(d.values[i + 1].percentage)
       })
@@ -150,7 +173,7 @@ d3.csv('data/rabies.csv').then(data => {
     slopeGroups.append('circle')
       .attr('r', 5)
       .attr('fill', '#BEBF9F')
-      .attr('cx', i * (width / 4))
+      .attr('cx', i * (widthSlope / 4))
       .attr('cy', d => y(d.values[i].percentage))
   }
 
@@ -159,32 +182,32 @@ d3.csv('data/rabies.csv').then(data => {
   //   .attr('dy', function (d) {
   //     return y(d.values[0].percentage) + 3
   //   })
-  //   .attr('dx', -margin.left)
+  //   .attr('dx', -marginSlope.left)
   //   .attr('stroke', 'none')
   //   .attr('font-size', '10px')
   //   .attr('class', 'slope-group-text')
 
-  let slopeScaleLabels = svgSlope.append('g')
+  let slopeScaleLabels = svg.append('g')
     .attr('class', 'slope-scale-labels')
 
   slopeScaleLabels.append('text')
     .text('50%')
     .attr('font-size', '10px')
-    .attr('dx', width + 10)
+    .attr('dx', widthSlope + 10)
     .attr('dy', 30)
 
   slopeScaleLabels.append('text')
     .text('0%')
     .attr('font-size', '10px')
-    .attr('dx', width + 10)
-    .attr('dy', height - margin.bottom + 5)
+    .attr('dx', widthSlope + 10)
+    .attr('dy', heightSlope - marginSlope.bottom + 5)
 
-  let legend = svgSlope.selectAll('.legend')
+  let legend = svg.selectAll('.legend')
     .data(color)
     .enter().append('g')
     .attr('class', 'legend')
     .attr('transform', function (d, i) {
-      return 'translate(' + -90 + ',' + (i * 20) + ')'
+      return 'translate(' + -90 + ',' + (i * 20 + legendMargin) + ')'
     })
 
   legend.append('rect')
@@ -209,47 +232,54 @@ d3.csv('data/rabies.csv').then(data => {
 
   let initialArea = d3.area()
     .x(function (d, i) { return xStream(d.data.Year) })
-    .y0(height)
-    .y1(height)
+    .y0(heightStream)
+    .y1(heightStream)
 
   let area = d3.area()
     .x(function (d, i) { return xStream(d.data.Year) })
     .y0(function (d) { return yStream(d[0]) })
     .y1(function (d) { return yStream(d[1]) + 5 })
 
-  let yAxis = g => g
-    .attr('transform', `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).tickFormat(d3.format('.0%')))
-    .call(g => g.select('.tick:last-of-type text').clone()
-      .attr('x', 4)
-      .attr('text-anchor', 'start')
-      .attr('font-weight', 'bold'))
-    .attr('class', 'y-axis')
+  let streamGroup = svg.append('g').attr('transform', `translate(0,0)`)
 
-  let xAxis = g => g
-    .attr('transform', `translate(0,${height - margin.bottom + margin.top})`)
-    .call(d3.axisBottom(x))
+  // enter exit update aaaaay
+  function updateStreamGraph(data, area) {
+    let selection = streamGroup.selectAll('.streamgraph-group').select('path')
+      .data(data)
+      .attr('d', area)
 
-  let xAxisStream = g => g
-    .attr('transform', `translate(0,${height - margin.bottom - 20 + margin.top})`)
-    .call(d3.axisBottom(xStream))
-
-  let streamGroup = svgSlope.append('g').attr('transform', `translate(0,0)`)
-
-  streamGroup.selectAll('path')
-    .data(layers)
-    .enter().append('g')
-    .attr('class', 'streamgraph-group')
-    .append('path')
-    .attr('d', initialArea)
-    .style('fill', function (d) {
-      let index = color.findIndex(function (c) {
-        return c.text == d.key
+    selection.enter().append('g')
+      .attr('class', 'streamgraph-group')
+      .append('path')
+      .attr('d', area)
+      .style('fill', function (d) {
+        let index = color.findIndex(function (c) {
+          return c.text == d.key
+        })
+        return color[index].color
       })
-      return color[index].color
-    })
-    .attr('class', d => d.key + ' streamgraph-path')
-    .style('opacity', 0)
+      .attr('class', d => d.key + ' streamgraph-path')
+      .style('opacity', 0)
+
+    selection.exit().remove()
+  }
+
+  updateStreamGraph(layers, area)
+
+  // streamGroup.selectAll('path')
+  //   .data(layers)
+  //   .enter().append('g')
+  //   .attr('class', 'streamgraph-group')
+  //   .append('path')
+  //   .attr('d', initialArea)
+  //   .style('fill', function (d) {
+  //     let index = color.findIndex(function (c) {
+  //       return c.text == d.key
+  //     })
+  //     return color[index].color
+  //   })
+  //   .attr('class', d => d.key + ' streamgraph-path')
+  //   .style('opacity', 0)
 
   streamGroup.append('g')
     .attr('class', 'streamgraph-x-axis')
@@ -293,7 +323,7 @@ d3.csv('data/rabies.csv').then(data => {
           }
         })
 
-      svgSlope.attr('viewBox', -margin.left + ' ' + -margin.top + ' ' + (width + margin.left + margin.right) + ' ' + height)
+      svg.attr('viewBox', -marginSlope.left + ' ' + -marginSlope.top + ' ' + (widthSlope + marginSlope.left + marginSlope.right) + ' ' + heightSlope)
 
       d3.selectAll('.border-lines,.slope-scale-labels')
         .transition()
@@ -306,6 +336,11 @@ d3.csv('data/rabies.csv').then(data => {
 
       streamGroup.select('.streamgraph-x-axis')
         .style('opacity', 0)
+
+      d3.selectAll('.legend')
+        .attr('transform', function (d, i) {
+          return 'translate(' + -90 + ',' + (i * 20 + legendMargin) + ')'
+        })
 
     } else if (node.index === 2) {
       transitionToStreamGraph()
@@ -324,6 +359,22 @@ d3.csv('data/rabies.csv').then(data => {
             return 1.0
           }
         })
+    } else if (node.index === 4) {
+
+      d3.select('.chart-title')
+        .text('So which animals are rabid?')
+
+      d3.select('.chart-description')
+        .text('Percentage of each animal in the pool of total rabid animals, 2013 - 2017')
+
+    } else if (node.index === 5) {
+      d3.select('.chart-title')
+        .text('Many dogs reported, but few are rabid')
+
+      d3.select('.chart-description')
+        .text('Number of dogs reported versus dogs found rabid')
+
+      transitionToReportedVSRabid('Dog')
     }
   }
 
@@ -340,41 +391,47 @@ d3.csv('data/rabies.csv').then(data => {
     streamGroup.select('.streamgraph-x-axis')
       .style('opacity', 1)
 
-    svgSlope.attr('viewBox', '0 0 ' + width + ' ' + height)
+    d3.selectAll('.legend')
+      .attr('transform', function (d, i) {
+        return 'translate(' + 20 + ',' + (i * 20 + 35) + ')'
+      })
 
-    // // create axes
-    // // let yAxisGroup = streamGroup.append('g')
-    // //   .call(yAxis)
+    svg.attr('viewBox', '0 0 ' + widthStream + ' ' + heightStream)
+  }
 
-    // streamGroup.append('text')
-    //   .attr('transform', 'rotate(-90)')
-    //   .attr('y', -2)
-    //   .attr('x', -80)
-    //   .attr('dy', '1em')
-    //   .attr('font-size', '10px')
-    //   .style('text-anchor', 'middle')
-    //   .text('% of Total Rabid Animals')
+  function transitionToReportedVSRabid(animal) {
+    d3.csv('data/reported_vs_rabid.csv').then(dataReportedRabid => {
 
-    // transition the lines to the same coordinates as the paths here
-    // console.log(layers)
+      let dataFormatted = dataReportedRabid.map(d => {
+        return {
+          'Reported': d[animal + 's ' + 'Reported'],
+          'Rabid': d[animal + 's ' + 'Rabid'],
+          'Year': new Date(d.Year)
+        }
+      })
 
-    // streamGroup.append('line')
-    //   .attr('x1', 0)
-    //   .attr('y1', y(0.321))
-    //   .attr('x2', 0)
-    //   .attr('y2', y(0.65))
-    //   .attr('stroke', 'black')
+      let stackAnimal = d3.stack().keys(['Reported', 'Rabid'])
+        .order(d3.stackOrderAscending)
+        .offset(d3.stackOffsetWiggle)
 
-    // let area = d3.area()
-    //   .x(function (d, i) {
-    //     return x(d.data.Year)
-    //   })
-    //   .y0(function (d) {
-    //     return y(d[0])
-    //   })
-    //   .y1(function (d) {
-    //     return y(d[1]) + 3
-    //   })
+      let layersAnimal = stackAnimal(dataFormatted)
+
+      console.log(layersAnimal)
+
+      let xAnimal = d3.scaleTime()
+        .domain(d3.extent(dataFormatted, d => d.Year))
+        .range([marginStream.left, widthStream - marginStream.right])
+
+      let yAnimal = d3.scaleLinear()
+        .range([300 - marginStream.bottom, marginStream.top])
+
+      let areaAnimal = d3.area()
+        .x(function (d, i) { return xAnimal(d.data.Year) })
+        .y0(function (d) { return yAnimal(d[0]) })
+        .y1(function (d) { return yAnimal(d[1]) + 5 })
+
+      updateStreamGraph(layersAnimal, areaAnimal)
+    })
   }
 
   function handleStepExit(node) {
@@ -401,3 +458,13 @@ d3.csv('data/rabies.csv').then(data => {
     return array.reduce((acc, val) => acc.concat(val), [])
   }
 })
+
+// d = {
+//   'year': new Date(d.Year),
+//   'key': animal,
+//   'stats': {
+//     'Reported': d[animal + 's ' + 'Reported'],
+//     'Rabid': d[animal + 's ' + 'Rabid']
+//    }
+// }
+// return d
