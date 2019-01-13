@@ -374,7 +374,7 @@ d3.csv('data/rabies.csv').then(data => {
       d3.select('.chart-description')
         .text('Number of dogs reported versus dogs found rabid')
 
-      transitionToReportedVSRabid('Dog')
+      // transitionToReportedVSRabid('Dog')
     }
   }
 
