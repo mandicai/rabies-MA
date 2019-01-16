@@ -167,26 +167,41 @@ d3.csv('data/rabies.csv').then(data => {
     .attr('dx', widthSlope + 10)
     .attr('dy', heightSlope - marginSlope.bottom + 5)
 
-  let legend = svg.selectAll('.legend')
-    .data(color)
-    .enter().append('g')
-    .attr('class', 'legend')
-    .attr('transform', function (d, i) {
-      return 'translate(' + -90 + ',' + (i * 20 + legendMargin) + ')'
+  function updateLegend(scale, marginLegend) {
+    let legend = svg.selectAll('.legend')
+      .data(scale)
+
+    legend.attr('transform', function (d, i) {
+      return 'translate(' + marginLegend.x + ',' + (i * 20 + marginLegend.y) + ')'
     })
 
-  legend.append('rect')
-    .attr('x', -20)
-    .attr('y', -9)
-    .style('fill', d => d.color)
-    .style('stroke', 'black')
-    .style('stroke-width', '0.5px')
-    .attr('width', '10px')
-    .attr('height', '10px')
+    legend.select('rect')
+      .style('fill', d => d.color)
 
-  legend.append('text')
-    .style('font-size', '12px')
-    .text(d => d.text)
+    legend.select('text')
+      .text(d => d.text)
+
+    let legendGroups = legend.enter().append('g')
+      .attr('class', 'legend')
+      .attr('transform', function (d, i) {
+        return 'translate(' + marginLegend.x + ',' + (i * 20 + marginLegend.y) + ')'
+      })
+
+    legendGroups.append('rect')
+      .attr('x', -20)
+      .attr('y', -9)
+      .style('fill', d => d.color)
+      .style('stroke', 'black')
+      .style('stroke-width', '0.5px')
+      .attr('width', '10px')
+      .attr('height', '10px')
+
+    legendGroups.append('text')
+      .style('font-size', '12px')
+      .text(d => d.text)
+
+    legend.exit().remove()
+  }
 
   let total = svg.append('g')
     .attr('class', 'total')
@@ -196,12 +211,16 @@ d3.csv('data/rabies.csv').then(data => {
 
   total.append('text')
     .text('Total Rabid:')
+    .attr('class', 'total-key')
     .style('font-size', '12px')
 
   total.append('text')
     .attr('y', 20)
     .text('624')
+    .attr('class', 'total-value')
     .style('font-size', '15px')
+
+  updateLegend(color, { x: -90, y: legendMargin })
 
   // streamgraph
   let stack = d3.stack().keys(data.columns.slice(1))
@@ -315,10 +334,7 @@ d3.csv('data/rabies.csv').then(data => {
       streamGroup.select('.streamgraph-x-axis')
         .style('opacity', 0)
 
-      d3.selectAll('.legend')
-        .attr('transform', function (d, i) {
-          return 'translate(' + -90 + ',' + (i * 20 + legendMargin) + ')'
-        })
+      updateLegend(color, { x: -90, y: legendMargin })
 
       d3.selectAll('.total')
         .attr('transform', function (d, i) {
@@ -355,9 +371,24 @@ d3.csv('data/rabies.csv').then(data => {
         .style('font-style', 'italic')
 
       updateStreamGraph(layers, area, color)
+
       d3.selectAll('.streamgraph-group').select('path').style('opacity', 1)
 
+      updateLegend(color, { x: 20, y: 35 })
+
+      d3.selectAll('.total')
+        .attr('transform', function (d, i) {
+          return 'translate(' + 0 + ',' + (i * 20 + 240) + ')'
+        })
+
     } else if (node.index === 5) {
+
+      d3.selectAll('.total')
+        .attr('transform', function (d, i) {
+          return 'translate(' + 0 + ',' + (i * 20 + 85) + ')'
+        })
+
+      updateLegend(colorReportedRabid, { x: 20, y: 35 })
 
       d3.select('.chart-title')
         .text('Many dogs reported, but none are found rabid')
@@ -403,10 +434,7 @@ d3.csv('data/rabies.csv').then(data => {
     streamGroup.select('.streamgraph-x-axis')
       .style('opacity', 1)
 
-    d3.selectAll('.legend')
-      .attr('transform', function (d, i) {
-        return 'translate(' + 20 + ',' + (i * 20 + 35) + ')'
-      })
+    updateLegend(color, { x: 20, y: 35 })
 
     d3.selectAll('.total')
       .attr('transform', function (d, i) {
