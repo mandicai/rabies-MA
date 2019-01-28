@@ -81,3 +81,8 @@ figure.sticky {
 .tick text {
   font-family: 'Arvo', serif;
 }
+
+#map {
+  width: 975px;
+  height: 500px;
+}
