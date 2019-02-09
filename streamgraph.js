@@ -21,17 +21,23 @@ let svg = d3.select('#graph-rabies').append('svg')
 
 d3.csv('data/rabies.csv').then(data => {
   let color = [
-    { text: 'Raccoon', color: '#D57500' },
-    { text: 'Skunk', color: '#8F3B1B' },
-    { text: 'Bat', color: '#DBCA69' },
-    { text: 'Fox', color: '#404F24' },
-    { text: 'Woodchuck', color: '#668D3C' },
-    { text: 'Cat', color: '#B99C6B' },
-    { text: 'Other*', color: '#BDD09F' },
-    { text: 'Coyote', color: '#4E6172' },
-    { text: 'Dog', color: '#493829' },
-    { text: 'Cow', color: '#816C5B' }
+    { text: 'Raccoon', color: '' },
+    { text: 'Skunk', color: '' },
+    { text: 'Bat', color: '' },
+    { text: 'Fox', color: '' },
+    { text: 'Woodchuck', color: '' },
+    { text: 'Cat', color: ''},
+    { text: 'Other*', color: '' },
+    { text: 'Coyote', color: '' },
+    { text: 'Dog', color: '' },
+    { text: 'Cow', color: '' }
   ]
+
+  let generated = ['#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#ffffbf', '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2']
+
+  color.forEach((c, i) => {
+    c.color = generated[i]
+  })
 
   let colorReportedRabid = [
     { text: 'Reported', color: '#309ef9' },
@@ -128,6 +134,7 @@ d3.csv('data/rabies.csv').then(data => {
       })
       return color[index].color
     })
+    .attr('stroke-width', '5px')
 
   // data.length - 1 because we want intervals
   for (let i = 0; i < data.length - 1; i ++) {
@@ -237,7 +244,7 @@ d3.csv('data/rabies.csv').then(data => {
   let area = d3.area()
     .x(function (d, i) { return xStream(d.data.Year) })
     .y0(function (d) { return yStream(d[0]) })
-    .y1(function (d) { return yStream(d[1]) + 5 })
+    .y1(function (d) { return yStream(d[1]) })
 
   let streamGroup = svg.append('g').attr('transform', `translate(0,0)`)
 
@@ -247,7 +254,7 @@ d3.csv('data/rabies.csv').then(data => {
       .data(data)
 
     selection.select('path').transition()
-      .duration(500)
+      .duration(350)
       .attr('d', area)
       .style('fill', function (d) {
         let index = color.findIndex(function (c) {
@@ -292,8 +299,14 @@ d3.csv('data/rabies.csv').then(data => {
     })
     .onStepEnter(handleStepEnter)
     .onStepExit(handleStepExit)
-    // .onContainerEnter(handleContainerEnter)
-    // .onContainerExit(handleContainerExit)
+
+  function handleStepExit(node) {
+    if (node.index === 0) {
+       d3.selectAll('.slope-group')
+         .transition()
+         .style('opacity', 1)
+    }
+  }
 
   function handleStepEnter(node) {
     if (node.index === 0) {
@@ -327,7 +340,7 @@ d3.csv('data/rabies.csv').then(data => {
         .style('opacity', 1)
 
       streamGroup.selectAll('.streamgraph-path')
-        .transition().duration(1000) // might take out this transition
+        .transition().duration(350) // might take out this transition
         .attr('d', initialArea)
         .style('opacity', 0)
 
@@ -352,7 +365,7 @@ d3.csv('data/rabies.csv').then(data => {
 
       streamGroup.selectAll('.streamgraph-path')
         .transition()
-        .duration(750)
+        .duration(350)
         .style('opacity', d => {
           if (d.key != 'Raccoon' && d.key != 'Skunk' && d.key != 'Bat') {
             return 0.1
@@ -428,7 +441,7 @@ d3.csv('data/rabies.csv').then(data => {
 
     streamGroup.selectAll('.streamgraph-path')
       .style('opacity', 1)
-      .transition().duration(500) // might take out this transition
+      .transition().duration(350) // might take out this transition
       .attr('d', area)
 
     streamGroup.select('.streamgraph-x-axis')
@@ -472,18 +485,10 @@ d3.csv('data/rabies.csv').then(data => {
       let areaAnimal = d3.area()
         .x(function (d) { return xAnimal(d.data.Year) })
         .y0(function (d) { return yAnimal(d[0]) })
-        .y1(function (d) { return yAnimal(d[1]) + 5 })
+        .y1(function (d) { return yAnimal(d[1]) })
 
       updateStreamGraph(layersAnimal, areaAnimal, colorReportedRabid)
     })
-  }
-
-  function handleStepExit(node) {
-    if (node.index === 0) {
-      d3.selectAll('.slope-group')
-        .transition()
-        .style('opacity', 1)
-    }
   }
 
   function flatten(array) {

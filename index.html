@@ -9,9 +9,9 @@
   <meta name="twitter:title" content="So...is rabies alive in MA?">
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/main.css">
-  <link href="https://fonts.googleapis.com/css?family=Arvo|Major+Mono+Display" rel="stylesheet">
-  <script src='https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
-  <link href='https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+  <link href="https://fonts.googleapis.com/css?family=Arvo|Montserrat:700" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -107,16 +107,23 @@
             </div>
           </article>
         </div>
-        <div id='map'></div>
+        <p>Mass.gov also provides the numbers of animals positive for rabies and numbers of animals submitted by county.
+        Different species may occupy various habitats of differing square footage and have diverse migratory patterns.</p>
+
+        <p>For example, foxes can "actively maintain territories that may vary in size from 2 to 7 square miles," according to <a href="https://www.mass.gov/service-details/learn-about-foxes">Mass.gov</a>. They enjoy spending time in the intersections of
+        forests, fields, and thickets. Bats will occupy buildings and trees in the summer and move to caves or migrate elsewhere in the winter. The <a href="https://www.mass.gov/service-details/bats-of-massachusetts">9
+        different species of bats</a> native to Massachusetts can be found all over the state.</p>
+
+        <p>Let's take a look at the different counties in Massachusetts and the rabid animals reported in each.</p>
     </div>
   </div>
+  <div id="map"></div>
 
   <script src="https://unpkg.com/intersection-observer@0.5.0/intersection-observer.js"></script>
   <script src="https://unpkg.com/scrollama"></script>
   <script src="assets/d3.v5.min.js"></script>
   <script src="streamgraph.js"></script>
   <script src="map.js"></script>
-  <!-- <script src="slopegraph.js"></script> -->
 </body>
 
 </html>
