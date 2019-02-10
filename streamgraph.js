@@ -424,7 +424,7 @@ d3.csv('data/rabies.csv').then(data => {
     } else if (node.index === 8) {
 
       d3.select('.chart-title')
-        .text('Bats are most reported animal')
+        .text('Bats are the most reported animal')
 
       d3.select('.chart-description')
         .text('Number of bats reported rabid versus bats found rabid')

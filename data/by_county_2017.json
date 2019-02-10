@@ -1,0 +1,452 @@
+{
+  "type": "FeatureCollection",
+  "features": [{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.359625,
+          41.674512
+        ]
+      },
+      "properties": {
+        "county-name": "Barnstable",
+        "radius": 0,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.359625,
+          41.674512
+        ]
+      },
+      "properties": {
+        "county-name": "Barnstable",
+        "radius": 96,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.207833,
+          42.395209
+        ]
+      },
+      "properties": {
+        "county-name": "Berkshire",
+        "radius": 7,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.207833,
+          42.395209
+        ]
+      },
+      "properties": {
+        "county-name": "Berkshire",
+        "radius": 76,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.113570,
+          41.810962
+        ]
+      },
+      "properties": {
+        "county-name": "Bristol",
+        "radius": 11,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.113570,
+          41.810962
+        ]
+      },
+      "properties": {
+        "county-name": "Bristol",
+        "radius": 164,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.626533,
+          41.396635
+        ]
+      },
+      "properties": {
+        "county-name": "Dukes",
+        "radius": 0,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.626533,
+          41.396635
+        ]
+      },
+      "properties": {
+        "county-name": "Dukes",
+        "radius": 6,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.950401,
+          42.681390
+        ]
+      },
+      "properties": {
+        "county-name": "Essex",
+        "radius": 15,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.950401,
+          42.681390
+        ]
+      },
+      "properties": {
+        "county-name": "Essex",
+        "radius": 287,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.600530,
+          42.580148
+        ]
+      },
+      "properties": {
+        "county-name": "Franklin",
+        "radius": 11,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.600530,
+          42.580148
+        ]
+      },
+      "properties": {
+        "county-name": "Franklin",
+        "radius": 46,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.609280,
+          42.125271
+        ]
+      },
+      "properties": {
+        "county-name": "Hampden",
+        "radius": 6,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.609280,
+          42.125271
+        ]
+      },
+      "properties": {
+        "county-name": "Hampden",
+        "radius": 141,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.641633,
+          42.336419
+        ]
+      },
+      "properties": {
+        "county-name": "Hampshire",
+        "radius": 4,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.641633,
+          42.336419
+        ]
+      },
+      "properties": {
+        "county-name": "Hampshire",
+        "radius": 77,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.350572,
+          42.493036
+        ]
+      },
+      "properties": {
+        "county-name": "Middlesex",
+        "radius": 12,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.350572,
+          42.493036
+        ]
+      },
+      "properties": {
+        "county-name": "Middlesex",
+        "radius": 524,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.070672,
+          41.269651
+        ]
+      },
+      "properties": {
+        "county-name": "Nantucket",
+        "radius": 0,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.070672,
+          41.269651
+        ]
+      },
+      "properties": {
+        "county-name": "Nantucket",
+        "radius": 1,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.215853,
+          42.155180
+        ]
+      },
+      "properties": {
+        "county-name": "Norfolk",
+        "radius": 6,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.215853,
+          42.155180
+        ]
+      },
+      "properties": {
+        "county-name": "Norfolk",
+        "radius": 277,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.822310,
+           41.978485
+        ]
+      },
+      "properties": {
+        "county-name": "Plymouth",
+        "radius": 0,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.822310,
+           41.978485
+        ]
+      },
+      "properties": {
+        "county-name": "Plymouth",
+        "radius": 200,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.093698,
+          42.305385
+        ]
+      },
+      "properties": {
+        "county-name": "Suffolk",
+        "radius": 2,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.093698,
+          42.305385
+        ]
+      },
+      "properties": {
+        "county-name": "Suffolk",
+        "radius": 191,
+        "year": 2017,
+        "category": "submitted"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.806365,
+          42.273867
+        ]
+      },
+      "properties": {
+        "county-name": "Worcester",
+        "radius": 22,
+        "year": 2017,
+        "category": "positive"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.806365,
+          42.273867
+        ]
+      },
+      "properties": {
+        "county-name": "Worcester",
+        "radius": 366,
+        "year": 2017,
+        "category": "submitted"
+      }
+    }
+  ]
+}
