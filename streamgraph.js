@@ -419,7 +419,7 @@ d3.csv('data/rabies.csv').then(data => {
         .text('Many dogs reported, but none are found rabid')
 
       d3.select('.chart-description')
-        .text('Number of dogs reported rabid versus dogs found rabid')
+        .text('Number of dogs reported versus dogs found rabid, 2013-2017')
 
       transitionToReportedVSRabid('Dog')
 
@@ -429,7 +429,7 @@ d3.csv('data/rabies.csv').then(data => {
         .text('More cats reported, but few are found rabid')
 
       d3.select('.chart-description')
-        .text('Number of cats reported rabid versus cats found rabid')
+        .text('Number of cats reported versus cats found rabid, 2013-2017')
 
       transitionToReportedVSRabid('Cat')
 
@@ -439,7 +439,7 @@ d3.csv('data/rabies.csv').then(data => {
         .text('Bats are the most reported animal')
 
       d3.select('.chart-description')
-        .text('Number of bats reported rabid versus bats found rabid')
+        .text('Number of bats reported versus bats found rabid, 2013-2017')
 
       transitionToReportedVSRabid('Bat')
 

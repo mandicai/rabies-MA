@@ -57,7 +57,7 @@ article .step p {
   margin: 0;
   padding: 10% 1rem;
   text-align: center;
-  height: 225px;
+  min-height: 100px;
   font-size: 16px;
   background-color: #fff;
   pointer-events: none;
@@ -70,6 +70,10 @@ article .step p img {
   margin: auto;
   padding: 2%;
   filter: saturate(0);
+}
+
+article .step p span.animal-span {
+  display: block;
 }
 
 article .step p img.animal-row {
