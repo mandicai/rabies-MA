@@ -250,6 +250,18 @@ d3.csv('data/rabies.csv').then(data => {
 
   // enter exit update aaaaay
   function updateStreamGraph(data, area, color) {
+    let totalRabid = 0
+
+    data[0].forEach(d => {
+      if (d.data.Rabid) {
+        totalRabid = totalRabid + parseFloat(d.data.Rabid)
+      } else if (d.data.Bat) {
+        totalRabid = 624 // this is hardcoded because the data contains percentages, not number of animals
+      }
+    })
+
+    d3.select('.total-value').text(totalRabid.toString())
+
     let selection = streamGroup.selectAll('.streamgraph-group')
       .data(data)
 
