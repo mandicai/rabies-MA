@@ -90,6 +90,7 @@ article .step p img.cat-image {
 
 figure.sticky {
   position: sticky;
+  position: -webkit-sticky;
   width: 100%;
   margin: 0;
   top: 15vh;
