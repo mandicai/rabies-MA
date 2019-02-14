@@ -23,7 +23,7 @@ h1, h3, h4 {
 
 .header {
   text-align: center;
-  margin: 0 0 2%;
+  margin: 0 0 3% 0;
 }
 
 .animal-header img {
@@ -115,4 +115,48 @@ figure.sticky {
 
 .mapboxgl-canvas {
   width: 100%;
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+
+  .container {
+    width: 90%;
+  }
+
+  .header {
+    margin: 0 0 10% 0;
+  }
+
+  h1 {
+    font-size: 75px;
+  }
+
+  h3 {
+    font-size: 65px;
+  }
+
+  h4 {
+    font-size: 35px;
+  }
+
+  p {
+    font-size: 30px;
+    margin: 0 0 5%;
+  }
+
+  .animal-header img {
+    width: 25%;
+  }
+
+  .scrolly {
+    max-width: 90rem;
+  }
+
+  article {
+    max-width: 100rem;
+  }
+
+  article .step p {
+    font-size: 35px;
+  }
 }
