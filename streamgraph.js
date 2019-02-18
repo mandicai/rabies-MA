@@ -6,6 +6,9 @@ let widthSlope = 650,
     bottom: 30,
     left: 120
   },
+  slopeGraphDomain = [0, 0.5],
+  legendSlopeX = -100,
+  totalLabelSlopeY = 220,
   widthStream = 650,
   heightStream = 400,
   marginStream = {
@@ -14,12 +17,14 @@ let widthSlope = 650,
     bottom: 50,
     left: 110
   },
+  legendStreamX = 20,
+  totalLabelStreamY = 240,
   legendMargin = 10
 
 let svg = d3.select('#graph-rabies').append('svg')
   .attr('viewBox', -marginSlope.left + ' ' + -marginSlope.top + ' ' + (widthSlope + marginSlope.left + marginSlope.right)  + ' ' + heightSlope)
 
-d3.csv('data/rabies.csv').then(data => {
+d3.csv('data/rabies_summary_allyears.csv').then(data => {
   let color = [
     { text: 'Raccoon', color: '' },
     { text: 'Skunk', color: '' },
@@ -72,7 +77,7 @@ d3.csv('data/rabies.csv').then(data => {
     .range([marginStream.left, widthStream - marginStream.right])
 
   let y = d3.scaleLinear()
-    .domain([0, 0.5])
+    .domain(slopeGraphDomain)
     .range([heightSlope - marginSlope.bottom, marginSlope.top])
 
   let yStream = d3.scaleLinear()
@@ -159,20 +164,21 @@ d3.csv('data/rabies.csv').then(data => {
       .attr('cy', d => y(d.values[i].percentage))
   }
 
-  let slopeScaleLabels = svg.append('g')
-    .attr('class', 'slope-scale-labels')
+  let scaleLabels = svg.append('g')
+    .attr('class', 'scale-labels')
+    .attr('transform', 'translate(' + (widthSlope + 10) + ',' + 0 + ')')
 
-  slopeScaleLabels.append('text')
+  scaleLabels.append('text')
     .text('50%')
     .attr('font-size', '10px')
-    .attr('dx', widthSlope + 10)
     .attr('dy', 30)
+    .attr('class', 'upper-scale-label')
 
-  slopeScaleLabels.append('text')
+  scaleLabels.append('text')
     .text('0%')
     .attr('font-size', '10px')
-    .attr('dx', widthSlope + 10)
     .attr('dy', heightSlope - marginSlope.bottom + 5)
+    .attr('class', 'lower-scale-label')
 
   function updateLegend(scale, marginLegend) {
     let legend = svg.selectAll('.legend')
@@ -213,7 +219,7 @@ d3.csv('data/rabies.csv').then(data => {
   let total = svg.append('g')
     .attr('class', 'total')
     .attr('transform', function (d, i) {
-      return 'translate(' + -marginSlope.left + ',' + (i * 20 + 220) + ')'
+      return 'translate(' + -marginSlope.left + ',' + totalLabelSlopeY + ')'
     })
 
   total.append('text')
@@ -227,7 +233,7 @@ d3.csv('data/rabies.csv').then(data => {
     .attr('class', 'total-value')
     .style('font-size', '15px')
 
-  updateLegend(color, { x: -90, y: legendMargin })
+  updateLegend(color, { x: legendSlopeX, y: legendMargin })
 
   // streamgraph
   let stack = d3.stack().keys(data.columns.slice(1))
@@ -347,7 +353,7 @@ d3.csv('data/rabies.csv').then(data => {
 
       svg.attr('viewBox', -marginSlope.left + ' ' + -marginSlope.top + ' ' + (widthSlope + marginSlope.left + marginSlope.right) + ' ' + heightSlope)
 
-      d3.selectAll('.border-lines,.slope-scale-labels')
+      d3.selectAll('.border-lines,.scale-labels')
         .transition()
         .style('opacity', 1)
 
@@ -359,11 +365,11 @@ d3.csv('data/rabies.csv').then(data => {
       streamGroup.select('.streamgraph-x-axis')
         .style('opacity', 0)
 
-      updateLegend(color, { x: -90, y: legendMargin })
+      updateLegend(color, { x: legendSlopeX, y: legendMargin })
 
       d3.selectAll('.total')
         .attr('transform', function (d, i) {
-          return 'translate(' + -marginSlope.left + ',' + (i * 20 + 220) + ')'
+          return 'translate(' + -marginSlope.left + ',' + totalLabelSlopeY + ')'
         })
 
     } else if (node.index === 2) {
@@ -403,14 +409,14 @@ d3.csv('data/rabies.csv').then(data => {
 
       d3.selectAll('.total')
         .attr('transform', function (d, i) {
-          return 'translate(' + 0 + ',' + (i * 20 + 240) + ')'
+          return 'translate(' + 0 + ',' + totalLabelStreamY + ')'
         })
 
     } else if (node.index === 5) {
 
       d3.selectAll('.total')
         .attr('transform', function (d, i) {
-          return 'translate(' + 0 + ',' + (i * 20 + 85) + ')'
+          return 'translate(' + 0 + ',' + 85 + ')'
         })
 
       updateLegend(colorReportedRabid, { x: 20, y: 35 })
@@ -448,7 +454,7 @@ d3.csv('data/rabies.csv').then(data => {
 
   function transitionToStreamGraph() {
     // remove unneeded labels
-    d3.selectAll('.border-lines,.slope-scale-labels,.slope-group')
+    d3.selectAll('.border-lines,.scale-labels,.slope-group')
       .style('opacity', 0)
 
     streamGroup.selectAll('.streamgraph-path')
@@ -463,14 +469,14 @@ d3.csv('data/rabies.csv').then(data => {
 
     d3.selectAll('.total')
       .attr('transform', function (d, i) {
-        return 'translate(' + 0 + ',' + (i * 20 + 240) + ')'
+        return 'translate(' + 0 + ',' + totalLabelStreamY + ')'
       })
 
     svg.attr('viewBox', '0 0 ' + widthStream + ' ' + heightStream)
   }
 
   function transitionToReportedVSRabid(animal) {
-    d3.csv('data/reported_vs_rabid.csv').then(dataReportedRabid => {
+    d3.csv('data/reported_vs_rabid_allyears.csv').then(dataReportedRabid => {
 
       let dataFormatted = dataReportedRabid.map(d => {
         return {
@@ -491,7 +497,7 @@ d3.csv('data/rabies.csv').then(data => {
         .range([marginStream.left, widthStream - marginStream.right])
 
       let yAnimal = d3.scaleLinear()
-        .domain([0, 1250])
+        .domain([0, 1500])
         .range([300 - marginStream.bottom, marginStream.top])
 
       let areaAnimal = d3.area()
@@ -507,38 +513,3 @@ d3.csv('data/rabies.csv').then(data => {
     return array.reduce((acc, val) => acc.concat(val), [])
   }
 })
-
-// d = {
-//   'year': new Date(d.Year),
-//   'key': animal,
-//   'stats': {
-//     'Reported': d[animal + 's ' + 'Reported'],
-//     'Rabid': d[animal + 's ' + 'Rabid']
-//    }
-// }
-// return d
-
-// streamGroup.selectAll('path')
-//   .data(layers)
-//   .enter().append('g')
-//   .attr('class', 'streamgraph-group')
-//   .append('path')
-//   .attr('d', initialArea)
-//   .style('fill', function (d) {
-//     let index = color.findIndex(function (c) {
-//       return c.text == d.key
-//     })
-//     return color[index].color
-//   })
-//   .attr('class', d => d.key + ' streamgraph-path')
-//   .style('opacity', 0)
-
-// slopeGroups.append('text')
-//   .text(d => d.key)
-//   .attr('dy', function (d) {
-//     return y(d.values[0].percentage) + 3
-//   })
-//   .attr('dx', -marginSlope.left)
-//   .attr('stroke', 'none')
-//   .attr('font-size', '10px')
-//   .attr('class', 'slope-group-text')
