@@ -272,7 +272,7 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
       .data(data)
 
     selection.select('path').transition()
-      .duration(350)
+
       .attr('d', area)
       .style('fill', function (d) {
         let index = color.findIndex(function (c) {
@@ -327,129 +327,62 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
   }
 
   function handleStepEnter(node) {
-    if (node.index === 0) {
+    if (node.index === 0) highlightRaccoon()
+    if (node.index === 1) highlightBat()
+    if (node.index === 2) transitionToStreamGraph()
+    if (node.index === 3) highlightStreams()
+    if (node.index === 4) updateStreams()
+    if (node.index === 5) streamDog()
+    if (node.index === 7) streamCat()
+    if (node.index === 8) streamBat()
+  }
 
-      d3.selectAll('.slope-group')
-        .transition()
-        .style('opacity', d => {
-          if (d.key != 'Raccoon') {
-            return 0.1
-          } else {
-            return 1.0
-          }
-        })
+  function highlightRaccoon() {
+    d3.selectAll('.slope-group')
+      .transition()
+      .style('opacity', d => {
+        if (d.key != 'Raccoon') {
+          return 0.1
+        } else {
+          return 1.0
+        }
+      })
+  }
 
-    } else if (node.index === 1) {
+  function highlightBat() {
+    d3.selectAll('.slope-group')
+      .transition()
+      .style('opacity', d => {
+        if (d.key != 'Bat') {
+          return 0.1
+        } else {
+          return 1.0
+        }
+      })
 
-      d3.selectAll('.slope-group')
-        .transition()
-        .style('opacity', d => {
-          if (d.key != 'Bat') {
-            return 0.1
-          } else {
-            return 1.0
-          }
-        })
+    svg.attr('viewBox', -marginSlope.left + ' ' + -marginSlope.top + ' ' + (widthSlope + marginSlope.left + marginSlope.right) + ' ' + heightSlope)
 
-      svg.attr('viewBox', -marginSlope.left + ' ' + -marginSlope.top + ' ' + (widthSlope + marginSlope.left + marginSlope.right) + ' ' + heightSlope)
+    d3.selectAll('.border-lines,.scale-labels')
+      .transition()
+      .style('opacity', 1)
 
-      d3.selectAll('.border-lines,.scale-labels')
-        .transition()
-        .style('opacity', 1)
+    streamGroup.selectAll('.streamgraph-path')
+      .transition() // might take out this transition
+      .attr('d', initialArea)
+      .style('opacity', 0)
 
-      streamGroup.selectAll('.streamgraph-path')
-        .transition().duration(350) // might take out this transition
-        .attr('d', initialArea)
-        .style('opacity', 0)
+    streamGroup.select('.streamgraph-x-axis')
+      .style('opacity', 0)
 
-      streamGroup.select('.streamgraph-x-axis')
-        .style('opacity', 0)
+    updateLegend(color, {
+      x: legendSlopeX,
+      y: legendMargin
+    })
 
-      updateLegend(color, { x: legendSlopeX, y: legendMargin })
-
-      d3.selectAll('.total')
-        .attr('transform', function (d, i) {
-          return 'translate(' + -marginSlope.left + ',' + totalLabelSlopeY + ')'
-        })
-
-    } else if (node.index === 2) {
-
-      transitionToStreamGraph()
-
-      streamGroup.selectAll('.streamgraph-path')
-        .style('opacity', 1)
-
-    } else if (node.index === 3) {
-
-      streamGroup.selectAll('.streamgraph-path')
-        .transition()
-        .duration(350)
-        .style('opacity', d => {
-          if (d.key != 'Raccoon' && d.key != 'Skunk' && d.key != 'Bat') {
-            return 0.1
-          } else {
-            return 1.0
-          }
-        })
-
-    } else if (node.index === 4) {
-
-      d3.select('.chart-title')
-        .text('So which animals are rabid?')
-
-      d3.select('.chart-description')
-        .text('Percentage of each animal in the pool of 624 rabid animals, 2013 - 2017')
-        .style('font-style', 'italic')
-
-      updateStreamGraph(layers, area, color)
-
-      d3.selectAll('.streamgraph-group').select('path').style('opacity', 1)
-
-      updateLegend(color, { x: 20, y: 35 })
-
-      d3.selectAll('.total')
-        .attr('transform', function (d, i) {
-          return 'translate(' + 0 + ',' + totalLabelStreamY + ')'
-        })
-
-    } else if (node.index === 5) {
-
-      d3.selectAll('.total')
-        .attr('transform', function (d, i) {
-          return 'translate(' + 0 + ',' + 85 + ')'
-        })
-
-      updateLegend(colorReportedRabid, { x: 20, y: 35 })
-
-      d3.select('.chart-title')
-        .text('Many dogs reported, but none are found rabid')
-
-      d3.select('.chart-description')
-        .text('Number of dogs reported versus dogs found rabid, 2013-2017')
-
-      transitionToReportedVSRabid('Dog')
-
-    } else if (node.index === 7) {
-
-      d3.select('.chart-title')
-        .text('More cats reported, but few are found rabid')
-
-      d3.select('.chart-description')
-        .text('Number of cats reported versus cats found rabid, 2013-2017')
-
-      transitionToReportedVSRabid('Cat')
-
-    } else if (node.index === 8) {
-
-      d3.select('.chart-title')
-        .text('Bats are the most reported animal')
-
-      d3.select('.chart-description')
-        .text('Number of bats reported versus bats found rabid, 2013-2017')
-
-      transitionToReportedVSRabid('Bat')
-
-    }
+    d3.selectAll('.total')
+      .attr('transform', function (d, i) {
+        return 'translate(' + -marginSlope.left + ',' + totalLabelSlopeY + ')'
+      })
   }
 
   function transitionToStreamGraph() {
@@ -459,7 +392,7 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
 
     streamGroup.selectAll('.streamgraph-path')
       .style('opacity', 1)
-      .transition().duration(350) // might take out this transition
+      .transition() // might take out this transition
       .attr('d', area)
 
     streamGroup.select('.streamgraph-x-axis')
@@ -473,6 +406,79 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
       })
 
     svg.attr('viewBox', '0 0 ' + widthStream + ' ' + heightStream)
+  }
+
+  function highlightStreams() {
+    streamGroup.selectAll('.streamgraph-path')
+      .transition()
+
+      .style('opacity', d => {
+        if (d.key != 'Raccoon' && d.key != 'Skunk' && d.key != 'Bat') {
+          return 0.1
+        } else {
+          return 1.0
+        }
+      })
+  }
+
+  function updateStreams() {
+    d3.select('.chart-title')
+      .text('So which animals are rabid?')
+
+    d3.select('.chart-description')
+      .text('Percentage of each animal in the pool of 624 rabid animals, 2013 - 2017')
+      .style('font-style', 'italic')
+
+    updateStreamGraph(layers, area, color)
+
+    d3.selectAll('.streamgraph-group').select('path').style('opacity', 1)
+
+    updateLegend(color, { x: 20, y: 35 })
+
+    d3.selectAll('.total')
+      .attr('transform', function (d, i) {
+        return 'translate(' + 0 + ',' + totalLabelStreamY + ')'
+      })
+  }
+
+  function streamDog() {
+    d3.selectAll('.total')
+      .attr('transform', function (d, i) {
+        return 'translate(' + 0 + ',' + 85 + ')'
+      })
+
+    updateLegend(colorReportedRabid, {
+      x: 20,
+      y: 35
+    })
+
+    d3.select('.chart-title')
+      .text('Many dogs reported, but none are found rabid')
+
+    d3.select('.chart-description')
+      .text('Number of dogs reported versus dogs found rabid, 2013-2017')
+
+    transitionToReportedVSRabid('Dog')
+  }
+
+  function streamCat() {
+    d3.select('.chart-title')
+      .text('More cats reported, but few are found rabid')
+
+    d3.select('.chart-description')
+      .text('Number of cats reported versus cats found rabid, 2013-2017')
+
+    transitionToReportedVSRabid('Cat')
+  }
+
+  function streamBat() {
+    d3.select('.chart-title')
+      .text('Bats are the most reported animal')
+
+    d3.select('.chart-description')
+      .text('Number of bats reported versus bats found rabid, 2013-2017')
+
+    transitionToReportedVSRabid('Bat')
   }
 
   function transitionToReportedVSRabid(animal) {
