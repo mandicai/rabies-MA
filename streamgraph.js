@@ -272,7 +272,6 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
       .data(data)
 
     selection.select('path').transition()
-
       .attr('d', area)
       .style('fill', function (d) {
         let index = color.findIndex(function (c) {
@@ -411,7 +410,6 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
   function highlightStreams() {
     streamGroup.selectAll('.streamgraph-path')
       .transition()
-
       .style('opacity', d => {
         if (d.key != 'Raccoon' && d.key != 'Skunk' && d.key != 'Bat') {
           return 0.1
