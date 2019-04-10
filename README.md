@@ -11,10 +11,10 @@ Visualizations made in D3, scrolly story created with the help of [Scrollama](ht
 To run, `git clone` the repo, `cd` into the project, and run `http-server -c-1 -p 8000` (or any local server of your choice) to view the project at `localhost:8000`.
 
 ## Sources
-[Mass.gov: Rabies surveillance data](https://www.mass.gov/lists/rabies-surveillance-data)
-[Mass.gov: Rabies Clinics](https://www.mass.gov/service-details/rabies-clinics)
-[Mass.gov: Learn about foxes](https://www.mass.gov/service-details/learn-about-foxes)
-[Mass.gov: Bats of Massachusetts](https://www.mass.gov/service-details/bats-of-massachusetts)
+- [Mass.gov: Rabies surveillance data](https://www.mass.gov/lists/rabies-surveillance-data)
+- [Mass.gov: Rabies Clinics](https://www.mass.gov/service-details/rabies-clinics)
+- [Mass.gov: Learn about foxes](https://www.mass.gov/service-details/learn-about-foxes)
+- [Mass.gov: Bats of Massachusetts](https://www.mass.gov/service-details/bats-of-massachusetts)
 
 ## Resources
 Creating the charts:
