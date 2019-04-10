@@ -17,14 +17,14 @@ To run, `git clone` the repo, `cd` into the project, and run `http-server -c-1 -
 - [Mass.gov: Bats of Massachusetts](https://www.mass.gov/service-details/bats-of-massachusetts)
 
 ## Resources
-Creating the charts:
-- Stream graphs:
+Creating the charts
+- Stream graphs
   - https://observablehq.com/@mbostock/streamgraph-transitions
   - https://bl.ocks.org/john-guerra/f898333fb41d69978945d315e7b7980c
 - Slope graphs:
   - https://bl.ocks.org/tlfrd/042b2318c8767bad7a485098fbf760fc
 
-Choosing the color palette:
+Choosing the color palette
 - https://projects.susielu.com/viz-palette
 - https://cloudflare.design/color/
 
