@@ -4,8 +4,6 @@ let map = new mapboxgl.Map({
   container: 'map-2017', // container id
   style: 'mapbox://styles/mapbox/dark-v9', //hosted style id
   center: [-71.760653, 42.352326], // starting position
-  minZoom: 7,
-  maxZoom: 7,
   zoom: 7 // starting zoom
 })
 
@@ -13,10 +11,11 @@ let mapAllYears = new mapboxgl.Map({
   container: 'map-all-years',
   style: 'mapbox://styles/mapbox/dark-v9',
   center: [-71.760653, 42.352326],
-  minZoom: 7,
-  maxZoom: 7,
   zoom: 7
 })
+
+map.scrollZoom.disable()
+mapAllYears.scrollZoom.disable()
 
 d3.json('data/by_county_2017.json').then(data => {
   let stops2017 = []
