@@ -275,7 +275,8 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
     let selection = d3.select('.streamgraph').selectAll('.streamgraph-group')
       .data(data)
 
-    selection.select('path').transition()
+    selection.select('path') 
+      .transition('updateStreams') // name the transition so other transitions don't interrupt it, https://stackoverflow.com/questions/19381375/d3-js-stop-transitions-interrupting-on-mouseover
       .attr('d', area)
       .style('fill', d => {
         let index = color.findIndex(c => {
@@ -432,7 +433,7 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
 
     d3.select('.streamgraph').selectAll('.streamgraph-path')
       .style('opacity', 1)
-      .transition()
+      .transition('fillStreams') // name the transition so other transitions don't interrupt it
       .attr('d', area)
     
     d3.select('.streamgraph').select('.streamgraph-x-axis')
