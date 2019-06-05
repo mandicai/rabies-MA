@@ -161,7 +161,7 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
   function handleStepEnter(node) {
     if (node.index === 0) showSlopeGraph()
     if (node.index === 1) highlightRaccoon()
-    if (node.index === 2) highlightBat()
+    if (node.index === 2) highlightSkunkBat()
     if (node.index === 3) transitionToStreamGraph()
     if (node.index === 4) highlightStreams()
     if (node.index === 5) updateStreams()
@@ -404,7 +404,7 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
       })
   }
  
-  function highlightBat() {
+  function highlightSkunkBat() {
     showSlopeGraph() 
     hideStreamGraph()
     updateLegend(color, { x: legendSlopeX, y: legendMargin })
@@ -412,7 +412,7 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
     d3.selectAll('.slope-group')
       .transition()
       .style('opacity', d => {
-        if (d.key != 'Bat') {
+        if (d.key != 'Skunk' && d.key != 'Bat') {
           return 0.1
         } else {
           return 1.0
@@ -433,7 +433,7 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
 
     d3.select('.streamgraph').selectAll('.streamgraph-path')
       .style('opacity', 1)
-      .transition('fillStreams') // name the transition so other transitions don't interrupt it
+      .transition()
       .attr('d', area)
     
     d3.select('.streamgraph').select('.streamgraph-x-axis')
@@ -468,7 +468,7 @@ d3.csv('data/rabies_summary_allyears.csv').then(data => {
     updateLegend(color, { x: 20, y: 35 })
 
     d3.select('.chart-title')
-      .text('So which animals are rabid?')
+      .text('Which animals are rabid?')
 
     d3.select('.chart-description')
       .text(`Percentage of each animal in the pool of ${totalRabidCount} rabid animals, 2013 - 2017`)
