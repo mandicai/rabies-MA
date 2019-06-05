@@ -1,4 +1,4 @@
-# So...is rabies alive in MA?
+# Is rabies alive in MA?
 #### Demo: https://mandicai.github.io/rabies-MA/
 
 ## Intro
